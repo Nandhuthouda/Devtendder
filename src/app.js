@@ -2,33 +2,29 @@ const express = require('express');
 const app = express();
 
 
+const { adminAuth, userAuth } = require('./middleWare/Auth');
 
-app.use("/Hello", (req, res) => {
-  // res.send("Hello, nandhu!");
-  const token = "nandhu";
-  const isValid = token === "nandhu";
-  if(isValid){
-    res.send("nandhu is valid");
-  }
-  else{
-    res.status(401).send("Unauthorized");
-  }
-  // console.log("r1");
-  // next()
-},
-// (req, res) => {
-//   console.log("r2");
-//   res.send("Hello, nandhu!");
-// } 
-);
 
-app.use("/test", (req, res) => {
-  res.send("Hello, World!");
+app.use("/admin", adminAuth);
+app.use("/user", userAuth);
+
+app.use("/admin/GetAlldata", (req, res) => {
+  res.send("admin is Athorized person");
 });
 
-app.use("/", (req, res) => {
-  res.send("Hello, nandhu!");
+app.use("/user", (req, res) => {
+  res.send("user is Athorized person");
 });
+
+
+app.use("/admin/DeleteAll", (req, res) => {
+  res.send("A user is deleted!");
+});
+
+app.use("/admin/", (req, res) => {
+  res.send("Wrong URL");
+});
+
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
