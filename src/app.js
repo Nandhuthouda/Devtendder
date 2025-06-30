@@ -47,9 +47,7 @@ app.post("/form", async (req, res) => {
 
   console.log("📍 End of /form route");
 });
-console.log("first");
-
-
+// console.log("first");
 
 app.get("/users", async (req, res)=>{
   const userEmail = req.body.emailId
@@ -77,6 +75,35 @@ app.get("/feed", async(req, res)=>{
     res.status(500).send("Internal Server Error");
   }
 });
+
+app.delete("/remove", async(req, res)=>{
+  const userId = req.body.userId;
+  try{
+    const user = await User.findOneAndDelete({_id:userId});
+    res.send("user deleted succesfully");
+  }
+  catch(err){
+    console.error("Error saving user:", err.message);
+    res.status(404).send("Internal Server Error");
+  }
+})
+
+
+app.patch("/update", async(req, res)=>{
+  const userId = req.body.userId;
+  const data = req.body;
+  console.log(data);
+  try{
+    const user = await User.findByIdAndUpdate({_id:userId},data);
+    res.send("....")
+  }
+  catch(err){
+    console.error("Error saving user:", err.message);
+    res.status(404).send("Internal Server Error");
+  }
+});
+
+
 
 connectDB()
 .then(() => {
