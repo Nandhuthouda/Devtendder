@@ -24,6 +24,33 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+//asycn and await example
+app.post("/form", async (req, res) => {
+  const vari = new User(req.body);
+
+  // Delay function (waits for given milliseconds)
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  try {
+    console.log("⏳ Waiting for 15 seconds before saving...");
+    await sleep(15000);  // 15 seconds delay
+
+    await vari.save();  // Now save the data after delay
+    res.send("✅ User vari saved");
+    console.log("✅ Done");
+  } catch (err) {
+    console.log("❌ Error:", err);
+    res.status(500).send("Internal Server Error");
+  }
+
+  console.log("📍 End of /form route");
+});
+console.log("first");
+
+
+
 app.get("/users", async (req, res)=>{
   const userEmail = req.body.emailId
   console.log(userEmail);
