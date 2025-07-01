@@ -15,11 +15,18 @@ app.post("/signup", async (req, res) => {
   // console.log(user);
   try{
   // Save the user to the database
+
     await user.save();
     res.send("User created successfully");
   }
   catch(err){
-    console.error("Error saving user:", err);
+    if (err.name === 'ValidationError') {
+      // Collect and send validation error messages
+      const messages = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ errors: messages });
+    }
+
+    console.error("Unexpected Error:", err);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -94,7 +101,10 @@ app.patch("/update", async(req, res)=>{
   const data = req.body;
   console.log(data);
   try{
-    const user = await User.findByIdAndUpdate({_id:userId},data);
+    const user = await User.findByIdAndUpdate({_id:userId},data,{
+      returnDocument:"after",
+      runValidators:true,//it validates if we updates previous data
+    });
     res.send("....")
   }
   catch(err){
